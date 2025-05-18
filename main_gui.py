@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QComboBox, QDateEdit, QMessageBox, QFormLayout,
                              QGroupBox, QFrame, QStackedWidget)
 from PyQt5.QtGui import QFont, QIcon, QPixmap, QColor
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtCore import Qt, QDate 
 
 class SchoolManagementApp(QMainWindow):
     def __init__(self):
@@ -108,7 +108,7 @@ class SchoolManagementApp(QMainWindow):
         self.title_label.setStyleSheet("font-size: 20px; font-weight: bold;")
         title_layout.addWidget(self.title_label)
         
-        user_info = QLabel("مدیر سیستم | خروج")
+        user_info = QLabel("مدیر | خروج")
         user_info.setStyleSheet("color: #7f8c8d;")
         title_layout.addWidget(user_info, alignment=Qt.AlignRight)
         
