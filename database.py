@@ -7,7 +7,7 @@ class DataBase:
     def create_tables(self):
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS students (
-                id INTEGER PRIMARY KEY,
+                id TEXT PRIMARY KEY,
                 name TEXT,
                 grade TEXT,
                 checkin_date TEXT,
@@ -17,16 +17,19 @@ class DataBase:
         self.connection.commit()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS teachers (
-                id INTEGER PRIMARY KEY,
+                id TEXT PRIMARY KEY,
                 name TEXT,
                 lesson TEXT
             );
         ''')
         self.connection.commit()
 
-
-
+    def read_students(self):
+        res = self.cursor.execute('''SELECT * FROM students''').fetchall()
+        return res
 
 if __name__ == '__main__':
     db = DataBase()
-    db.create_tables()
+    # db.create_tables()
+    r = db.read_students()
+    print(r)

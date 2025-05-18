@@ -1,15 +1,16 @@
 import sys
+from database import DataBase
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QLineEdit, 
                              QTableWidget, QTableWidgetItem, QTabWidget,
                              QComboBox, QDateEdit, QMessageBox, QFormLayout,
                              QGroupBox, QFrame, QStackedWidget)
 from PyQt5.QtGui import QFont, QIcon, QPixmap, QColor
-from PyQt5.QtCore import Qt, QDate 
-
+from PyQt5.QtCore import Qt, QDate
 class SchoolManagementApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.db = DataBase()
         self.setWindowTitle("SchoolVision - سیستم مدیریت مدرسه")
         self.setGeometry(100, 100, 1200, 700)
         self.setWindowIcon(QIcon("school_icon.png"))
@@ -283,13 +284,7 @@ class SchoolManagementApp(QMainWindow):
         
     def populate_students_table(self):
         # داده‌های نمونه
-        students = [
-            ["1001", "علی محمدی", "پایه نهم", "1402/05/15", "فعال"],
-            ["1002", "زهرا احمدی", "پایه هشتم", "1402/06/20", "فعال"],
-            ["1003", "محمد حسینی", "پایه دهم", "1401/11/05", "غیرفعال"],
-            ["1004", "فاطمه کریمی", "پایه هفتم", "1402/03/10", "فعال"],
-            ["1005", "رضا نوروزی", "پایه یازدهم", "1400/09/22", "فعال"]
-        ]
+        students = self.db.read_students()
         
         self.students_table.setRowCount(len(students))
         
