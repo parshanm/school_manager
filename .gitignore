@@ -2,3 +2,4 @@
 *.db-journal
 test.py
 *.db
+*.zip

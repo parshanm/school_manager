@@ -1,5 +1,6 @@
 import sys
 from database import DataBase
+import keyboard
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QLineEdit, 
                              QTableWidget, QTableWidgetItem, QTabWidget,
@@ -11,7 +12,7 @@ class SchoolManagementApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = DataBase()
-        self.setWindowTitle("SchoolVision - سیستم مدیریت مدرسه")
+        self.setWindowTitle("دارالفنون - سیستم مدیریت مدرسه")
         self.setGeometry(100, 100, 1200, 700)
         self.setWindowIcon(QIcon("school_icon.png"))
         
@@ -65,13 +66,13 @@ class SchoolManagementApp(QMainWindow):
         
         # دکمه‌های نوار کناری
         buttons = [
-            ("داشبورد", "dashboard.png"),
-            ("دانش‌آموزان", "students.png"),
-            ("معلمان", "teachers.png"),
-            ("کلاس‌ها", "classes.png"),
-            ("مالی", "finance.png"),
-            ("گزارشات", "reports.png"),
-            ("تنظیمات", "settings.png")
+            ("داشبورد", "static/icon/dashboard.png"),
+            ("دانش‌آموزان", "static/icon/students.png"),
+            ("معلمان", "static/icon/teachers.png"),
+            ("کلاس‌ها", "static/icon/classes.png"),
+            ("مالی", "static/icon/finance.png"),
+            ("گزارشات", "static/icon/reports.png"),
+            ("تنظیمات", "static/icon/settings.png")
         ]
         
         for text, icon in buttons:
@@ -296,7 +297,7 @@ class SchoolManagementApp(QMainWindow):
                 if col == 4:
                     if data == "فعال":
                         item.setForeground(QColor(39, 174, 96))
-                    else:
+                    elif data == "غیر فعال":
                         item.setForeground(QColor(192, 57, 43))
                 
                 self.students_table.setItem(row, col, item)
