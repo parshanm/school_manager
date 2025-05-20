@@ -11,6 +11,7 @@ class AddStudentDialog(QDialog):
         self.db = DataBase()
         self.setWindowTitle("ثبت دانش‌آموز جدید")
         self.setWindowModality(Qt.ApplicationModal)
+        self.parent = parent
         self.setFixedSize(400, 300)
         
         # دیکشنری برای ذخیره اطلاعات
@@ -122,13 +123,15 @@ class AddStudentDialog(QDialog):
             checkin_date= self.student_data['registration_date'],
             status= self.student_data['status'],
             parent_phone= self.student_data['parent_phone']
-
         )
+
+        self.parent.statusBar().showMessage("دانش‌آموز با موفقیت ثبت شد")
+        self.parent.populate_students_table()
 
         # بستن پنجره
         self.accept()
 
-if __name__ == "__main__":
+def run():
     import sys   
     from PyQt5.QtWidgets import QApplication  
     app = QApplication(sys.argv)

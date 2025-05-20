@@ -1,5 +1,6 @@
 import sys
 from database import DataBase
+from add_student import AddStudentDialog
 import keyboard
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QLineEdit, 
@@ -244,6 +245,7 @@ class SchoolManagementApp(QMainWindow):
         """)
         
         add_btn = QPushButton("دانش‌آموز جدید")
+        add_btn.clicked.connect(self.show_add_student_dialog)
         add_btn.setStyleSheet(f"""
             QPushButton {{
                 background-color: {self.primary_color.name()};
@@ -312,11 +314,14 @@ class SchoolManagementApp(QMainWindow):
             <h3>دارالفنون</h3>
             <p>سیستم مدیریت مدرسه مدرن و هوشمند</p>
             <p>نسخه 1.0.0</p>
-            <p>© 2023 تمام حقوق محفوظ است</p>
+            <p>© 2025 تمام حقوق محفوظ است</p>
         """)
         about_box.exec_()
 
-
+    def show_add_student_dialog(self):
+        dialog = AddStudentDialog(self)
+        dialog.student_added.connect(self.populate_students_table)
+        dialog.exec_()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
