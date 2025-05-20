@@ -12,6 +12,7 @@ class SchoolManagementApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = DataBase()
+        self.db.create_tables()
         self.setWindowTitle("دارالفنون - سیستم مدیریت مدرسه")
         self.setGeometry(100, 100, 1200, 700)
         self.setWindowIcon(QIcon("school_icon.png"))
@@ -59,14 +60,14 @@ class SchoolManagementApp(QMainWindow):
         sidebar.setLayout(sidebar_layout)
         
         # لوگو
-        logo = QLabel("SchoolVision")
+        logo = QLabel("دارالفنون")
         logo.setAlignment(Qt.AlignCenter)
         logo.setStyleSheet("color: white; font-size: 18px; font-weight: bold; padding: 20px;")
         sidebar_layout.addWidget(logo)
         
         # دکمه‌های نوار کناری
         buttons = [
-            ("داشبورد", "static/icon/dashboard.png"),
+            ("داشبورد", "static/icon/dashboard.png"),  
             ("دانش‌آموزان", "static/icon/students.png"),
             ("معلمان", "static/icon/teachers.png"),
             ("کلاس‌ها", "static/icon/classes.png"),
@@ -157,9 +158,9 @@ class SchoolManagementApp(QMainWindow):
         stats_layout = QHBoxLayout()
         
         stats = [
-            ("تعداد دانش‌آموزان", "350", self.primary_color),
-            ("تعداد معلمان", "28", QColor(155, 89, 182)),
-            ("کلاس‌های فعال", "15", QColor(26, 188, 156)),
+            ("تعداد دانش‌آموزان", self.db.get_student_count(), self.primary_color),
+            ("تعداد معلمان", self.db.get_teachers_count(), QColor(155, 89, 182)),
+            ("کلاس‌ها", "15", QColor(26, 188, 156)),
             ("پرداخت‌های امروز", "12", QColor(241, 196, 15))
         ]
         
@@ -264,8 +265,8 @@ class SchoolManagementApp(QMainWindow):
         
         # جدول دانش‌آموزان
         self.students_table = QTableWidget()
-        self.students_table.setColumnCount(5)
-        self.students_table.setHorizontalHeaderLabels(["شناسه", "نام کامل", "کلاس", "تاریخ ثبت‌نام", "وضعیت"])
+        self.students_table.setColumnCount(6)
+        self.students_table.setHorizontalHeaderLabels(["شناسه", "نام کامل", "کلاس", "تاریخ ثبت‌نام", "وضعیت", "شماره تماس ولی"])
         self.students_table.setStyleSheet("""
             QTableWidget {
                 border: 1px solid #ddd;
@@ -306,14 +307,16 @@ class SchoolManagementApp(QMainWindow):
         
     def show_about(self):
         about_box = QMessageBox()
-        about_box.setWindowTitle("درباره SchoolVision")
+        about_box.setWindowTitle("درباره دارفنون")
         about_box.setText("""
-            <h3>SchoolVision</h3>
+            <h3>دارالفنون</h3>
             <p>سیستم مدیریت مدرسه مدرن و هوشمند</p>
             <p>نسخه 1.0.0</p>
             <p>© 2023 تمام حقوق محفوظ است</p>
         """)
         about_box.exec_()
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
