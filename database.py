@@ -12,7 +12,8 @@ class DataBase:
                 grade TEXT,
                 checkin_date TEXT,
                 status TEXT,
-                parent_phone TEXT
+                parent_phone TEXT,
+                student_phone TEXT
             );
         ''')
         self.connection.commit()
@@ -33,11 +34,11 @@ class DataBase:
         res = self.cursor.execute('''SELECT * FROM teachers''').fetchall()
         return res
     
-    def write_students(self, id, name, grade, checkin_date, status, parent_phone):
+    def write_students(self, id, name, grade, checkin_date, status, parent_phone, student_phone):
         self.cursor.execute('''
-            INSERT INTO students (id, name, grade, checkin_date, status, parent_phone)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (id, name, grade, checkin_date, status, parent_phone))
+            INSERT INTO students (id, name, grade, checkin_date, status, parent_phone, student_phone)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (id, name, grade, checkin_date, status, parent_phone, student_phone))
         self.connection.commit()
 
     def write_teachers(self, id, name, lesson):

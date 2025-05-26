@@ -5,16 +5,15 @@ import jdatetime
 from database import DataBase 
 from PyQt5.QtGui import QColor
 
-
-class AddStudentDialog(QDialog):
-    student_added = pyqtSignal(dict)  # سیگنال برای ارسال داده دانش‌آموز
+class DeleteStudentDialog(QDialog):
+    student_deleted = pyqtSignal(dict)  # سیگنال برای ارسال داده دانش‌آموز
     def __init__(self, parent=None):
         super().__init__(parent)
         self.db = DataBase()
-        self.setWindowTitle("ثبت دانش‌آموز جدید")
+        self.setWindowTitle("حذف دانش‌آموز ")
         self.setWindowModality(Qt.ApplicationModal)
         self.parent = parent
-        self.setFixedSize(400, 300)
+        self.setFixedSize(200, 100)
         
         # دیکشنری برای ذخیره اطلاعات
         self.student_data = {}
@@ -29,39 +28,17 @@ class AddStudentDialog(QDialog):
         form.setLabelAlignment(Qt.AlignRight)
         
         # فیلدهای ورودی
-        self.first_name = QLineEdit()
-        self.first_name.setPlaceholderText("نام")
-        
-        self.last_name = QLineEdit()
-        self.last_name.setPlaceholderText("نام خانوادگی")
-        
         self.national_id = QLineEdit()
         self.national_id.setPlaceholderText("کد ملی")
         self.national_id.setMaxLength(10)
-        
-        self.grade = QLineEdit()
-        self.grade.setPlaceholderText("پایه تحصیلی")
-        
-        self.parent_phone = QLineEdit()
-        self.parent_phone.setPlaceholderText("تلفن ولی")
-        self.parent_phone.setMaxLength(11)
-        
-        self.student_phone = QLineEdit()
-        self.student_phone.setPlaceholderText("تلفن دانش‌آموز")
-        self.student_phone.setMaxLength(11)
 
         # اضافه کردن فیلدها به فرم
-        form.addRow(self.first_name)
-        form.addRow(self.last_name)
         form.addRow(self.national_id)
-        form.addRow(self.grade)
-        form.addRow(self.parent_phone)
-        form.addRow(self.student_phone)
         form.setSpacing(10)
         
         # دکمه‌ها
         btn_layout = QHBoxLayout()
-        self.submit_btn = QPushButton("ثبت اطلاعات")
+        self.submit_btn = QPushButton("حذف")
         self.submit_btn.clicked.connect(self.submit_data)
         self.submit_btn.setStyleSheet("""
             QPushButton {
@@ -98,43 +75,11 @@ class AddStudentDialog(QDialog):
         self.setLayout(layout)
     
     def submit_data(self):
-        # اعتبارسنجی داده‌ها
-        if not all([
-            self.first_name.text(),
-            self.last_name.text(),
-            self.national_id.text(),
-            self.grade.text(),
-            self.parent_phone.text()
-        ]):
-            QMessageBox.warning(self, "خطا", "لطفاً تمام فیلدها را پر کنید!")
-            return
-        
         if len(self.national_id.text()) != 10:
             QMessageBox.warning(self, "خطا", "کد ملی باید 10 رقمی باشد!")
             return
-        
-        # ذخیره اطلاعات در دیکشنری
-        self.student_data = {
-            'first_name': self.first_name.text(),
-            'last_name': self.last_name.text(),
-            'full_name': f"{self.first_name.text()} {self.last_name.text()}",
-            'national_id': self.national_id.text(),
-            'grade': self.grade.text(),
-            'parent_phone': self.parent_phone.text(),
-            'status': 'فعال',
-            'registration_date': jdatetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-            'studdent_phone': self.student_phone.text()
-        }
 
-        self.db.write_students(
-            id= self.student_data['national_id'],
-            name= f"{self.student_data['first_name']} {self.student_data['last_name']}",
-            grade= self.student_data['grade'],
-            checkin_date= self.student_data['registration_date'],
-            status= self.student_data['status'],
-            parent_phone= self.student_data['parent_phone'],
-            student_phone= self.student_data['studdent_phone']
-        )
+        self.db.delete_student(self.national_id.text())
         self.primary_color = QColor(52, 152, 219)
         self.tabs = QTabWidget()
         self.tabs.setStyleSheet("""
@@ -152,10 +97,10 @@ class AddStudentDialog(QDialog):
                 border-bottom: 2px solid %s; 
             }
         """ % self.primary_color.name())
-        self.parent.statusBar().showMessage("دانش‌آموز با موفقیت ثبت شد")
-        self.parent.populate_students_table()
-        self.dashboard_tab = QWidget()
+
+        self.parent.statusBar().showMessage("دانش‌آموز با موفقیت حذف شد")
+        self.parent.init_dashboard_tab(self=self.parent,tab=self.dashboard_tab)
+
 
         # بستن پنجره
         self.accept()
-        

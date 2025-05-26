@@ -1,6 +1,6 @@
-./venv
+/env/
 *.db-journal
 test.py
 *.db
 *.zip
-./__pycache__
+/__pycache__/

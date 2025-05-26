@@ -1,7 +1,7 @@
 import sys
 from database import DataBase
 from add_student import AddStudentDialog
-import keyboard
+from del_student import DeleteStudentDialog
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                              QHBoxLayout, QLabel, QPushButton, QLineEdit, 
                              QTableWidget, QTableWidgetItem, QTabWidget,
@@ -16,7 +16,7 @@ class SchoolManagementApp(QMainWindow):
         self.db.create_tables()
         self.setWindowTitle("دارالفنون - سیستم مدیریت مدرسه")
         self.setGeometry(100, 100, 1200, 700)
-        self.setWindowIcon(QIcon("school_icon.png"))
+        self.setWindowIcon(QIcon("static/school_icon.png"))
         
         # رنگ‌های اصلی برنامه
         self.primary_color = QColor(52, 152, 219)
@@ -51,51 +51,52 @@ class SchoolManagementApp(QMainWindow):
         central_widget.setLayout(main_layout)
         
         # نوار کناری
-        sidebar = QFrame()
-        sidebar.setFrameShape(QFrame.StyledPanel)
-        sidebar.setFixedWidth(200)
-        sidebar.setStyleSheet(f"background-color: {self.primary_color.name()};")
+        # sidebar = QFrame()
+        # sidebar.setFrameShape(QFrame.StyledPanel)
+        # sidebar.setFixedWidth(200)
+        # sidebar.setStyleSheet(f"background-color: {self.primary_color.name()};")
         
-        sidebar_layout = QVBoxLayout()
-        sidebar_layout.setAlignment(Qt.AlignTop)
-        sidebar.setLayout(sidebar_layout)
+        # sidebar_layout = QVBoxLayout()
+        # sidebar_layout.setAlignment(Qt.AlignTop)
+        # sidebar.setLayout(sidebar_layout)
         
-        # لوگو
-        logo = QLabel("دارالفنون")
-        logo.setAlignment(Qt.AlignCenter)
-        logo.setStyleSheet("color: white; font-size: 18px; font-weight: bold; padding: 20px;")
-        sidebar_layout.addWidget(logo)
+        # # لوگو
+        # logo = QLabel("دارالفنون")
+        # logo.setAlignment(Qt.AlignCenter)
+        # logo.setStyleSheet("color: white; font-size: 18px; font-weight: bold; padding: 20px;")
+        # sidebar_layout.addWidget(logo)
         
-        # دکمه‌های نوار کناری
-        buttons = [
-            ("داشبورد", "static/icon/dashboard.png"),  
-            ("دانش‌آموزان", "static/icon/students.png"),
-            ("معلمان", "static/icon/teachers.png"),
-            ("کلاس‌ها", "static/icon/classes.png"),
-            ("مالی", "static/icon/finance.png"),
-            ("گزارشات", "static/icon/reports.png"),
-            ("تنظیمات", "static/icon/settings.png")
-        ]
+        # # دکمه‌های نوار کناری
+        # buttons = [
+        #     ("داشبورد", "static/icon/dashboard.png", 'dash'),  
+        #     ("دانش‌آموزان", "static/icon/students.png", 'students'),
+        #     ("معلمان", "static/icon/teachers.png", 'teacher'),
+        #     ("کلاس‌ها", "static/icon/classes.png", 'class'),
+        #     ("مالی", "static/icon/finance.png", 'fine'),
+        #     ("گزارشات", "static/icon/reports.png", 'report'),
+        #     ("تنظیمات", "static/icon/settings.png", 'sets')
+        # ]
         
-        for text, icon in buttons:
-            btn = QPushButton(text)
-            btn.setIcon(QIcon(icon))
-            btn.setStyleSheet("""
-                QPushButton {
-                    color: white;
-                    text-align: left;
-                    padding: 10px;
-                    border: none;
-                    font-size: 14px;
-                }
-                QPushButton:hover {
-                    background-color: #2980b9;
-                }
-            """)
-            btn.setCursor(Qt.PointingHandCursor)
-            sidebar_layout.addWidget(btn)
+        # for text, icon, call_back in buttons:
+        #     btn = QPushButton(text)
+        #     btn.setIcon(QIcon(icon))
+        #     # btn.clicked.connect(self.call_back_handeler(call_back))
+        #     btn.setStyleSheet("""
+        #         QPushButton {
+        #             color: white;
+        #             text-align: left;
+        #             padding: 10px;
+        #             border: none;
+        #             font-size: 14px;
+        #         }
+        #         QPushButton:hover {
+        #             background-color: #2980b9;
+        #         }
+        #     """)
+        #     btn.setCursor(Qt.PointingHandCursor)
+        #     sidebar_layout.addWidget(btn)
         
-        sidebar_layout.addStretch()
+        # sidebar_layout.addStretch()
         
         # بخش محتویات اصلی
         content_area = QWidget()
@@ -108,8 +109,9 @@ class SchoolManagementApp(QMainWindow):
         title_layout = QHBoxLayout()
         title_bar.setLayout(title_layout)
         
-        self.title_label = QLabel("داشبورد")
+        self.title_label = QLabel("صفحه اصلی")
         self.title_label.setStyleSheet("font-size: 20px; font-weight: bold;")
+        self.title_label.setAlignment(Qt.AlignLeft)
         title_layout.addWidget(self.title_label)
         
         user_info = QLabel("مدیر | خروج")
@@ -137,9 +139,9 @@ class SchoolManagementApp(QMainWindow):
         """ % self.primary_color.name())
         
         # تب داشبورد
-        dashboard_tab = QWidget()
-        self.init_dashboard_tab(dashboard_tab)
-        self.tabs.addTab(dashboard_tab, "داشبورد")
+        self.dashboard_tab = QWidget()
+        self.init_dashboard_tab(self.dashboard_tab)
+        self.tabs.addTab(self.dashboard_tab, "داشبورد")
         
         # تب دانش‌آموزان
         students_tab = QWidget()
@@ -148,7 +150,7 @@ class SchoolManagementApp(QMainWindow):
         
         content_layout.addWidget(self.tabs)
         
-        main_layout.addWidget(sidebar)
+        # main_layout.addWidget(sidebar)
         main_layout.addWidget(content_area)
         
     def init_dashboard_tab(self, tab):
@@ -258,17 +260,38 @@ class SchoolManagementApp(QMainWindow):
                 background-color: #2980b9;
             }}
         """)
+
+        add_btn.setCursor(Qt.PointingHandCursor)
+
+        delete_btn = QPushButton("حذف دانش‌آموز")
+        delete_btn.clicked.connect(self.show_delete_student_dialog)
+        delete_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.primary_color.name()};
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 4px;
+            }}
+            QPushButton:hover {{
+                background-color: #2980b9;
+            }}
+        """)
+        delete_btn.setCursor(Qt.PointingHandCursor)
         
         toolbar_layout.addWidget(search_box)
         toolbar_layout.addStretch()
+        toolbar_layout.addWidget(delete_btn)
         toolbar_layout.addWidget(add_btn)
         
         layout.addWidget(toolbar)
         
         # جدول دانش‌آموزان
         self.students_table = QTableWidget()
-        self.students_table.setColumnCount(6)
-        self.students_table.setHorizontalHeaderLabels(["شناسه", "نام کامل", "کلاس", "تاریخ ثبت‌نام", "وضعیت", "شماره تماس ولی"])
+        self.students_table.setColumnCount(7)
+        self.students_table.setHorizontalHeaderLabels(
+            ["شناسه", "نام کامل", "کلاس", "تاریخ ثبت‌نام", "وضعیت", "شماره تماس ولی", "شماره تماس دانش‌آموز"]
+            )
         self.students_table.setStyleSheet("""
             QTableWidget {
                 border: 1px solid #ddd;
@@ -281,7 +304,7 @@ class SchoolManagementApp(QMainWindow):
             }
         """)
         
-        # پر کردن جدول با داده‌های نمونه
+        # پر کردن جدول
         self.populate_students_table()
         
         layout.addWidget(self.students_table)
@@ -312,7 +335,7 @@ class SchoolManagementApp(QMainWindow):
         about_box.setWindowTitle("درباره دارفنون")
         about_box.setText("""
             <h3>دارالفنون</h3>
-            <p>سیستم مدیریت مدرسه مدرن و هوشمند</p>
+            <p>سیستم مدیریت مدرسه هوشمند</p>
             <p>نسخه 1.0.0</p>
             <p>© 2025 تمام حقوق محفوظ است</p>
         """)
@@ -320,8 +343,12 @@ class SchoolManagementApp(QMainWindow):
 
     def show_add_student_dialog(self):
         dialog = AddStudentDialog(self)
-        dialog.student_added.connect(self.populate_students_table)
         dialog.exec_()
+
+    def show_delete_student_dialog(self):
+        dialog = DeleteStudentDialog(self)
+        dialog.exec_()
+            
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -332,3 +359,4 @@ if __name__ == "__main__":
     window = SchoolManagementApp()
     window.show()
     sys.exit(app.exec_())
+
