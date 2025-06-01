@@ -382,6 +382,10 @@ QComboBox QScrollBar::sub-line:vertical {
         """
         )
 
+        back_btn = QPushButton()
+        back_btn.setIcon(QIcon("static/icon/cancel1.png"))
+        back_btn.clicked.connect(self.populate_students_table)
+
         add_btn.setCursor(Qt.PointingHandCursor)
 
         delete_btn = QPushButton("حذف دانش‌آموز")
@@ -405,6 +409,7 @@ QComboBox QScrollBar::sub-line:vertical {
         toolbar_layout.addWidget(self.search_box)
         toolbar_layout.addWidget(self.filters)
         toolbar_layout.addWidget(filter_label)
+        toolbar_layout.addWidget(back_btn)
         toolbar_layout.addStretch()
         toolbar_layout.addWidget(delete_btn)
         toolbar_layout.addWidget(add_btn)
@@ -457,6 +462,8 @@ QComboBox QScrollBar::sub-line:vertical {
                 self.students_table.setItem(row, col, item)
 
         self.students_table.resizeColumnsToContents()
+        self.filters.setCurrentIndex(0)
+        self.search_box.setText('')
 
     def show_about(self):
         about_box = QMessageBox()
@@ -488,10 +495,8 @@ QComboBox QScrollBar::sub-line:vertical {
         }
         filterss = self.filters.currentText()
         dat = self.search_box.text()
-        print(dat)
         res = []
         f = int(d[filterss])
-        print(f)
         for i in self.students:
             if i[f] == dat:
                 res.append(i)
@@ -505,10 +510,11 @@ QComboBox QScrollBar::sub-line:vertical {
             box = QMessageBox()
             box.setWindowTitle("عدم وجود")
             box.setText(
-                """
-            <p>داش آموزی یافت نشد</p>
+                f"""
+            <p>داش آموزی با {filterss} {dat}یافت نشد</p>
 """
             )
+            box.exec_()
 
     def show_add_student_dialog(self):
         dialog = AddStudentDialog(self)
