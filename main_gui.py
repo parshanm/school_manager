@@ -32,6 +32,7 @@ class SchoolManagementApp(QMainWindow):
         super().__init__()
         self.db = DataBase()
         self.db.create_tables()
+        self.students = self.db.read_students()
         self.setWindowTitle("دارالفنون - سیستم مدیریت مدرسه")
         self.setGeometry(100, 100, 1200, 700)
         self.setWindowIcon(QIcon("static/school_icon.png"))
@@ -266,9 +267,9 @@ class SchoolManagementApp(QMainWindow):
         toolbar_layout = QHBoxLayout()
         toolbar.setLayout(toolbar_layout)
 
-        search_box = QLineEdit()
-        search_box.setPlaceholderText("جستجوی دانش‌آموز...")
-        search_box.setStyleSheet(
+        self.search_box = QLineEdit()
+        self.search_box.setPlaceholderText("جستجوی دانش‌آموز...")
+        self.search_box.setStyleSheet(
             """
             QLineEdit {
                 padding: 8px;
@@ -288,11 +289,11 @@ class SchoolManagementApp(QMainWindow):
             "شماره تماس ولی",
             "شماره تماس دانش‌آموز",
         ]
-        filters = QComboBox(self)
+        self.filters = QComboBox(self)
         for i in colums:
-            filters.addItem(i)
+            self.filters.addItem(i)
 
-        filters.setStyleSheet(
+        self.filters.setStyleSheet(
             """
             QComboBox {
     border: 1px solid #bdc3c7;
@@ -360,13 +361,9 @@ QComboBox QScrollBar::sub-line:vertical {
 
         filter_label = QLabel(self, text="جست و جو بر اساس:")
 
-        print(filters.currentText())
+        print(self.filters.currentText())
 
-        k.add_hotkey(
-            "Enter",
-            self.search_student,
-            args=(filters.currentText(), search_box.text()),
-        )
+        k.add_hotkey("Enter", self.search_student)
 
         add_btn = QPushButton("دانش‌آموز جدید")
         add_btn.clicked.connect(self.show_add_student_dialog)
@@ -405,8 +402,8 @@ QComboBox QScrollBar::sub-line:vertical {
         )
         delete_btn.setCursor(Qt.PointingHandCursor)
 
-        toolbar_layout.addWidget(search_box)
-        toolbar_layout.addWidget(filters)
+        toolbar_layout.addWidget(self.search_box)
+        toolbar_layout.addWidget(self.filters)
         toolbar_layout.addWidget(filter_label)
         toolbar_layout.addStretch()
         toolbar_layout.addWidget(delete_btn)
@@ -479,18 +476,39 @@ QComboBox QScrollBar::sub-line:vertical {
         )
         about_box.exec_()
 
-    def search_student(self, filters, data):
+    def search_student(self):
         d = {
-            "شناسه": "id",
-            "نام کامل": 'name',
-            "کلاس": 'grade',
-            "تاریخ ثبت‌نام": 'checkin_date',
-            "وضعیت": 'status',
-            "شماره تماس ولی": 'parent_phone',
-            "شماره تماس دانش‌آموز": 'student_phone',
+            "شناسه": "0",
+            "نام کامل": "1",
+            "کلاس": "2",
+            "تاریخ ثبت‌نام": "3",
+            "وضعیت": "4",
+            "شماره تماس ولی": "5",
+            "شماره تماس دانش‌آموز": "6",
         }
-        res = self.db.search_student(d[filters], data)
-        self.populate_students_table(res)
+        filterss = self.filters.currentText()
+        dat = self.search_box.text()
+        print(dat)
+        res = []
+        f = int(d[filterss])
+        print(f)
+        for i in self.students:
+            if i[f] == dat:
+                res.append(i)
+            else:
+                continue
+        print(res)
+
+        if len(res) != 0:
+            self.populate_students_table(res)
+        else:
+            box = QMessageBox()
+            box.setWindowTitle("عدم وجود")
+            box.setText(
+                """
+            <p>داش آموزی یافت نشد</p>
+"""
+            )
 
     def show_add_student_dialog(self):
         dialog = AddStudentDialog(self)
