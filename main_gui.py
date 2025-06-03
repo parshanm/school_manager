@@ -16,13 +16,13 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
     QTabWidget,
     QComboBox,
-    QDateEdit,
     QMessageBox,
     QFormLayout,
     QGroupBox,
     QFrame,
     QStackedWidget,
 )
+from payment_tab import PaymentsTab
 from PyQt5.QtGui import QFont, QIcon, QPixmap, QColor
 from PyQt5.QtCore import Qt, QDate
 
@@ -171,6 +171,9 @@ class SchoolManagementApp(QMainWindow):
         students_tab = QWidget()
         self.init_students_tab(students_tab)
         self.tabs.addTab(students_tab, "دانش‌آموزان")
+
+        pay_tab = PaymentsTab(self.db)
+        self.tabs.addTab(pay_tab, "پرداخت‌ها")
 
         content_layout.addWidget(self.tabs)
 
@@ -463,7 +466,7 @@ QComboBox QScrollBar::sub-line:vertical {
 
         self.students_table.resizeColumnsToContents()
         self.filters.setCurrentIndex(0)
-        self.search_box.setText('')
+        self.search_box.setText("")
 
     def show_about(self):
         about_box = QMessageBox()

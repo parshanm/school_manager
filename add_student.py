@@ -135,23 +135,6 @@ class AddStudentDialog(QDialog):
             parent_phone= self.student_data['parent_phone'],
             student_phone= self.student_data['studdent_phone']
         )
-        self.primary_color = QColor(52, 152, 219)
-        self.tabs = QTabWidget()
-        self.tabs.setStyleSheet("""
-            QTabWidget::pane { border: 0; }
-            QTabBar::tab { 
-                padding: 8px 15px; 
-                background: #ecf0f1; 
-                border: 1px solid #ddd; 
-                border-bottom: none; 
-                border-top-left-radius: 4px; 
-                border-top-right-radius: 4px; 
-            }
-            QTabBar::tab:selected { 
-                background: white; 
-                border-bottom: 2px solid %s; 
-            }
-        """ % self.primary_color.name())
         self.parent.statusBar().showMessage("دانش‌آموز با موفقیت ثبت شد")
         self.parent.populate_students_table()
         self.dashboard_tab = QWidget()

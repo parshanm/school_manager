@@ -30,6 +30,21 @@ class DataBase:
             );
         """
         )
+
+        self.cursor.execute(
+            """
+        CREATE TABLE IF NOT EXISTS payments(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id TEXT,
+        student_name TEXT,
+        class_name TEXT,
+        price TEXT,
+        payment_date TEXT
+
+        );
+"""
+        )
+
         self.connection.commit()
 
     def read_students(self):
@@ -125,16 +140,27 @@ class DataBase:
         res = self.cursor.execute("""SELECT COUNT(*) FROM classes""").fetchone()
         return str(res[0])
 
-    def search_student(self, filter, data):
-        query = f"""SELECT * FROM students WHERE {filter}=?"""
-        res = self.cursor.execute(query, (data,)).fetchall()
-        print(res)
+    def add_payment(self, data: tuple):
+        query = """INSERT INTO payments (student_id, student_name, class_name, price, payment_date)
+        VALUES (?, ?, ?, ?, ?)
+        """
+        self.cursor.execute(query, data)
+        self.connection.commit()
+        return "done."
+
+    def delete_payment(self, id):
+        self.cursor.execute("DELETE FROM payments WHERE id = ?", (id,))
+        self.connection.commit()
+        return "done."
+
+    def get_payments(self):
+        res = self.cursor.execute("SELECT * FROM payments").fetchall()
         return res
 
 
 if __name__ == "__main__":
     pass
-    # db = DataBase()
+    db = DataBase()
     # db.create_tables()
     # r = db.read_students()
     # print(r)
@@ -151,5 +177,7 @@ if __name__ == "__main__":
     # db.add_classes('math', 'Jane Smith', '9:30', '11:00', '902')
     # r = db.read_classes()
     # print(r)
-    # r = db.search_student('name', 'parshan mazaheri')
+    # db.add_payment(("111", "John Doe", "902", "1000", "2023-10-01"))
+    # r = db.get_payments()
     # print(r)
+    # db.delete_payment('1')

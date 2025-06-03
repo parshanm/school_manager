@@ -3,4 +3,6 @@
 test.py
 *.db
 *.zip
+*.txt
 /__pycache__/
+.vscode/
